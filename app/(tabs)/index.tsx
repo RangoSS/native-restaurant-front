@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, Modal, ScrollView } from 'react-native';
 import { Button, Card, Title, Paragraph } from 'react-native-paper';
-
+import LoginDrawer from '../../components/LoginDrawer';
 
 const HomeScreen = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -9,6 +9,7 @@ const HomeScreen = () => {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loginModalVisible, setLoginModalVisible] = useState(false);
 
   useEffect(() => {
     fetchRestaurants();
@@ -64,14 +65,24 @@ const HomeScreen = () => {
     </Card>
   );
 
+  const renderGalleryItem = ({ item }) => (
+    <Image source={{ uri: item.image }} style={styles.galleryImage} />
+  );
+
   return (
     <View style={styles.container}>
+      {/* Login Drawer Button */}
+      <Button mode="contained" onPress={() => setLoginModalVisible(true)} style={styles.getStartedButton}>
+        Get Started
+      </Button>
+
       <TextInput
         style={styles.searchBar}
         placeholder="Search restaurants..."
         value={searchText}
         onChangeText={handleSearch}
       />
+
       <FlatList
         data={filteredRestaurants}
         renderItem={renderRestaurant}
@@ -79,6 +90,17 @@ const HomeScreen = () => {
         contentContainerStyle={styles.list}
       />
 
+      {/* Image Gallery */}
+      <Text style={styles.galleryTitle}>View Images</Text>
+      <FlatList
+        data={restaurants}
+        renderItem={renderGalleryItem}
+        keyExtractor={(item) => item._id}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      />
+
+      {/* Modal for Restaurant Details */}
       {selectedRestaurant && (
         <Modal visible={modalVisible} animationType="slide" onRequestClose={closeModal}>
           <ScrollView style={styles.modalContent}>
@@ -96,6 +118,9 @@ const HomeScreen = () => {
           </ScrollView>
         </Modal>
       )}
+
+      {/* Login Drawer Component */}
+      <LoginDrawer visible={loginModalVisible} onClose={() => setLoginModalVisible(false)} />
     </View>
   );
 };
@@ -121,11 +146,23 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   cardImage: {
+    width: '100%',
     height: 150,
   },
   service: {
     marginTop: 5,
     fontStyle: 'italic',
+  },
+  galleryTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
+  galleryImage: {
+    width: 120,
+    height: 80,
+    marginRight: 10,
+    borderRadius: 8,
   },
   modalContent: {
     flex: 1,
@@ -145,6 +182,9 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 16,
     marginBottom: 8,
+  },
+  getStartedButton: {
+    marginBottom: 15,
   },
 });
 
