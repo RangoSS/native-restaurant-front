@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, Modal, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // To use AsyncStorage for storing user info
-
+import { useNavigation } from '@react-navigation/native'; // To navigate to client page
 
 const LoginDrawer = ({ visible, onClose }) => {
+
+  const navigation = useNavigation();
   const [isRegister, setIsRegister] = useState(false); // Toggle between login/register
   const [form, setForm] = useState({
     name: '',
@@ -61,21 +63,22 @@ const LoginDrawer = ({ visible, onClose }) => {
         });
   
         const data = await response.json();
-  
+         console.log('my datas',data,response)
         if (response.ok) {
           const { token } = data;
   
           // Decode token to get user info (assuming it's a JWT token)
           const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode base64 part of JWT
           const userId = decodedToken.id;
-          const username = decodedToken.name;
+          const username = decodedToken.role;
   
           // Save user info in localStorage
           await AsyncStorage.setItem('userId', userId.toString());
           await AsyncStorage.setItem('username', username);
-  
+          await AsyncStorage.setItem('userToken',token);
           alert('Login successful!');
-          // Optionally, navigate to the home screen or update UI
+           // Navigate to the client page (or the page you want after login)
+           navigation.navigate('Restaurant'); // Make sure you have the 'Client' screen set up in your navigator
         } else {
           alert(`Error: ${data.message || 'Login failed'}`);
         }
