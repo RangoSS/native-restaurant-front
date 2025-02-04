@@ -1,7 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, TextInput, ScrollView, Alert, TouchableOpacity } from 'react-native';
-
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 const Profile = () => {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.welcomeText}>Welcome to your Profile!</Text>
+    </View>
+  );
+};
 
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f8f9fa",
+  },
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+  },
+});
+
+export default Profile;
